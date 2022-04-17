@@ -37,8 +37,8 @@ namespace organizer_server
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-
-            // This is fuck
+#if !LOCAL_IIS
+            // This is Azure
             .ConfigureAppConfiguration((context, config) =>
             {
                 var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
@@ -50,11 +50,12 @@ namespace organizer_server
             {
                 webBuilder.UseStartup<Startup>();
             });
-
-        // This is work fine
-        /*.ConfigureWebHostDefaults(webBuilder =>
-        {
-            webBuilder.UseStartup<Startup>();
-        });*/
+#else
+            // This iis express
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
+#endif
     }
 }
