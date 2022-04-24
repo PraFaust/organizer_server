@@ -28,10 +28,11 @@ namespace organizer_server
     {
         public bool login { get; set; }
         public bool password { get; set; }
-
+        public string token { get; set; }
         public JSONLoginResponse() {
             login = false;
             password = false;
+            token = null;
         }
     }
 

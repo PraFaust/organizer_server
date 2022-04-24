@@ -7,6 +7,8 @@ using organizer_server.Models;                 // пространство имен моделей
 using Microsoft.EntityFrameworkCore;        // пространство имен EntityFramework
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace organizer_server
 {
@@ -38,6 +40,33 @@ namespace organizer_server
             string connection = Configuration.GetConnectionString("DBConnection");
             services.AddDbContext<UserContext>(options => options.UseSqlServer(connection));
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        // работа по http
+                        options.RequireHttpsMetadata = false;
+
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            // укзывает, будет ли валидироваться издатель при валидации токена
+                            ValidateIssuer = true,
+                            // строка, представляющая издателя
+                            ValidIssuer = AuthOptions.ISSUER,
+
+                            // будет ли валидироваться потребитель токена
+                            ValidateAudience = true,
+                            // установка потребителя токена
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            // будет ли валидироваться время существования
+                            ValidateLifetime = true,
+
+                            // установка ключа безопасности
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            // валидация ключа безопасности
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
+
             services.AddControllers();
         }
 
@@ -58,6 +87,7 @@ namespace organizer_server
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseCors(MyAllowSpecificOrigins);

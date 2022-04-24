@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using organizer_server.Models;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Collections.Generic;
+
 
 namespace organizer_server.Controllers
 {
@@ -34,6 +35,18 @@ namespace organizer_server.Controllers
                     if (users.pass == loginJSON.pass)
                     {
                         response.password = true;
+                        var identity = GetIdentity(users.username, users.pass);
+                        var now = DateTime.UtcNow;
+                        // создаем JWT-токен
+                        var jwt = new JwtSecurityToken(
+                                issuer: AuthOptions.ISSUER,
+                                audience: AuthOptions.AUDIENCE,
+                                notBefore: now,
+                                claims: identity.Claims,
+                                expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                        var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+                        response.token = encodedJwt;
                         return JsonSerializer.Serialize<JSONLoginResponse>(response);
                     }
                     // incorrect pass
@@ -80,6 +93,18 @@ namespace organizer_server.Controllers
             db.SaveChanges();
             // Registration success;
             return JsonSerializer.Serialize<JSONRegResponse>(response); ;
+        }
+        private ClaimsIdentity GetIdentity(string username, string password)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, username),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, "user")
+            };
+            ClaimsIdentity claimsIdentity =
+            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
+            return claimsIdentity;
         }
     }
 }
