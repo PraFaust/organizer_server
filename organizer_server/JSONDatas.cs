@@ -23,7 +23,10 @@ namespace organizer_server
         public string sex { get; set; }
         public string newsletter { get; set; }
     }
-
+    public class JSONDataUserItems
+    { 
+        public string items { get; set; }
+    }
     public class JSONLoginResponse 
     {
         public bool login { get; set; }

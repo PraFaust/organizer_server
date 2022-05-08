@@ -25,10 +25,10 @@ namespace organizer_server.Controllers
             return await db.Users.ToListAsync();
         }
         // GET api/users/5
-        [HttpGet("{id}")]
+        [HttpGet("{UserId}")]
         public async Task<ActionResult<User>> Get(int id)
         {
-            User user = await db.Users.FirstOrDefaultAsync(x => x.id == id);
+            User user = await db.Users.FirstOrDefaultAsync(x => x.UserId == id);
             if (user == null)
                 return NotFound();
             return new ObjectResult(user);
@@ -56,7 +56,7 @@ namespace organizer_server.Controllers
             {
                 return BadRequest();
             }
-            if (!db.Users.Any(x => x.id == user.id))
+            if (!db.Users.Any(x => x.UserId == user.UserId))
             {
                 return NotFound();
             }
@@ -67,10 +67,10 @@ namespace organizer_server.Controllers
         }
 
         // DELETE api/users/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{UserId}")]
         public async Task<ActionResult<User>> Delete(int id)
         {
-            User user = db.Users.FirstOrDefault(x => x.id == id);
+            User user = db.Users.FirstOrDefault(x => x.UserId == id);
             if (user == null)
             {
                 return NotFound();

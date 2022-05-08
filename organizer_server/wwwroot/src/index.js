@@ -13,6 +13,8 @@ async function GetAllUsers() {
         users = await response.json();
         BDFieldsCreate(users);
         console.log("GetAllUsers() success...");
+    } else {
+        console.log("GetAllUsers() fail...");
     }
 }
 // Получение одного пользователя
@@ -24,9 +26,9 @@ async function GetUser(id) {
     if (response.ok === true) {
         const user = await response.json();
         const form = document.forms["userForm"];
-        form.elements["id"].value = user.id;
-        form.elements["name"].value = user.name;
-        form.elements["age"].value = user.age;
+        form.elements["UserId"].value = user.userId;
+        form.elements["Name"].value = user.name;
+        form.elements["Age"].value = user.age;
     }
 }
 // Добавление пользователя
@@ -124,7 +126,7 @@ function headAdd(field) {
 function rowAdd(user) {
 
     const tr = document.createElement("tr");
-    tr.setAttribute("data-rowid", user.id);
+    tr.setAttribute("data-rowid", user.userId);
     let data = new Object();
     for (field in user) {
         data[field] = user[field];
@@ -136,24 +138,24 @@ function rowAdd(user) {
     const linksTd = document.createElement("td");
 
     const editLink = document.createElement("a");
-    editLink.setAttribute("data-id", user.id);
+    editLink.setAttribute("data-id", user.userId);
     editLink.setAttribute("style", "cursor:pointer;padding:15px;");
     editLink.append("Изменить");
     editLink.addEventListener("click", e => {
 
         e.preventDefault();
-        GetUser(user.id);
+        GetUser(user.userId);
     });
     linksTd.append(editLink);
 
     const removeLink = document.createElement("a");
-    removeLink.setAttribute("data-id", user.id);
+    removeLink.setAttribute("data-id", user.userId);
     removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
     removeLink.append("Удалить");
     removeLink.addEventListener("click", e => {
 
         e.preventDefault();
-        DeleteUser(user.id);
+        DeleteUser(user.userId);
     });
 
     linksTd.append(removeLink);
@@ -161,7 +163,7 @@ function rowAdd(user) {
 
     tBody.append(tr);
     // создаем ссылку на существующий элемент который будем заменять
-    var tr2 = document.querySelector("tr[data-rowid='" + user.id + "']");
+    var tr2 = document.querySelector("tr[data-rowid='" + user.userId + "']");
     var parentTr = tr2.parentNode;
     // заменяем существующий элемент sp2 на созданный нами sp1
     parentTr.replaceChild(tr, tr2);

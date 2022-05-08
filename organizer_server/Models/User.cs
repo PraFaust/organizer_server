@@ -7,12 +7,12 @@ namespace organizer_server.Models
 {
     public class User
     {
-        public int id { get; set; }
-        public string firstname { get; set; }
-        public string username { get; set; }
-        public string email { get; set; }
-        public string pass { get; set; }
-        public string sex { get; set; }
-        public bool newsletter { get; set; }
+        public int UserId { get; set; }
+        public string Firstname { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Pass { get; set; }
+        public string Sex { get; set; }
+        public bool Newsletter { get; set; }
     }
 }

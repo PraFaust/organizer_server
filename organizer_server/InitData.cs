@@ -11,7 +11,7 @@ namespace organizer_server
         public static void Initialize(UserContext context)
         {
             var admin = context.Users
-                    .Where(b => b.username == "Admin")
+                    .Where(b => b.Username == "Admin")
                     .FirstOrDefault();
 
             if (admin == null)
@@ -19,13 +19,13 @@ namespace organizer_server
                 context.Users.AddRange(
                     new User
                     {
-                        id = 0,
-                        firstname = "Maxim",
-                        username = "Admin",
-                        email = "maximnsuslov@gmail.com",
-                        pass = "12345678",
-                        sex = "male",
-                        newsletter = true
+                        UserId = 0,
+                        Firstname = "Maxim",
+                        Username = "Admin",
+                        Email = "maximnsuslov@gmail.com",
+                        Pass = "12345678",
+                        Sex = "male",
+                        Newsletter = true
                     }
                 );
                 context.SaveChanges();
