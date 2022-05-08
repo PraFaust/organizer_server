@@ -36,8 +36,11 @@ namespace organizer_server
                                         .AllowAnyMethod();
                                   });
             });
-
+#if !LOCAL_IIS
             string connection = Configuration.GetConnectionString("DBConnection");
+#else
+            string connection = Configuration.GetConnectionString("DefaultConnection");
+#endif
             services.AddDbContext<UserContext>(options => options.UseSqlServer(connection));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
